@@ -6,24 +6,37 @@ void criarArvore(No **no){
     *no = NULL;
 }
 
+int pesquisa(No* no, Info *info) {
+    if (no == NULL) return 0;
+
+    if (info->titulo_eleitor < no->info->titulo_eleitor) return pesquisa(no->esq, info);
+
+    if (info->titulo_eleitor > no->info->titulo_eleitor) return pesquisa (no->dir, info);
+
+    return 1;
+}
+
 void criaInfo(){
     Info *info;
     info = (Info*) malloc(sizeof (Info));
 
     do{
-        printf("Digite o nome do eleitor: ");
+        printf("\bDigite o nome do eleitor: ");
         fflush(stdin);
         fgets(info->Nome, 50, stdin);
-        printf("Agora, o numero do seu titulo: ");
+        printf("\bAgora, o numero do seu titulo: ");
         scanf("%d", &info->titulo_eleitor);
 
         if(info->titulo_eleitor <= 0){
-            printf("Titulo invalido\n");
+            printf("\bTitulo invalido\n");
+        }
+        if(pesquisa(arvoreTitulos, info)){
+            printf("\bTitulo ja existente\n");
+            return;
         }
     } while (info->titulo_eleitor<=0);
 
     insereTitulo(&arvoreTitulos, info);
-
 }
 
 void insereTitulo(No **no, Info *info){

@@ -18,3 +18,4 @@ void insereTitulo(No **, Info *);
 void criaInfo();
 void preOrderRec (No* no);
 void mostraMenu();
+int pesquisa (No*, Info *) ;
