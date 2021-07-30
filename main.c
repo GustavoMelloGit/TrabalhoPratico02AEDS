@@ -2,9 +2,8 @@
 #include "Arvore.h"
 
 int main() {
-    criaInfo();
-    criaInfo();
-    preOrderRec(arvoreTitulos);
+    mostraMenu();
+
 
     return 0;
 }
