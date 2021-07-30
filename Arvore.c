@@ -18,6 +18,7 @@ void criarArvore(No **no) {
 
 void mostraMenu() {
     int op, voto;
+    Info *iAux;
 
     printf("\b==========Menu==========\n");
     printf("\b1 - Cadastrar um titulo\n");
@@ -34,7 +35,8 @@ void mostraMenu() {
     printf("Digite sua opcao: ");
     do {
         scanf("%d", &op);
-    } while (op < 0 || op > 6);
+        if(op < 0 || op > 9) printf("\bOpcao invalida, digite novamente\n");
+    } while (op < 0 || op > 9);
 
     switch (op) {
         case 1:
@@ -43,8 +45,13 @@ void mostraMenu() {
         case 2:
             printf("\bQual titulo deseja remover?\n");
             scanf("%d", &op);
-            Info *iAux = pesquisaTitulo(arvoreTitulos, op);
-            retira(&arvoreTitulos, *iAux);
+            if(pesquisaTitulo(arvoreTitulos, op)){
+                iAux = pesquisaTitulo(arvoreTitulos, op);
+                retira(&arvoreTitulos, *iAux);
+            } else{
+                printf("\bTitulo nao existe\n\n");
+                mostraMenu();
+            }
             break;
         case 3:
             printf("\bJa houve alguma votacao? (1- sim / 2- nao)\n");
@@ -56,7 +63,11 @@ void mostraMenu() {
             if (op == 1) {
                 limpaArvore(arvoreVotos);
                 criarArvore(&arvoreVotos);
-            } else criarArvore(&arvoreVotos);
+                mostraMenu();
+            } else{
+                criarArvore(&arvoreVotos);
+                mostraMenu();
+            }
             break;
         case 4:
             printf("\bDigite seu titulo de eleitor: ");
@@ -71,18 +82,24 @@ void mostraMenu() {
                         if (voto < 1 || voto > 2) printf("\bVoto invalido!\n");
                     } while (voto < 1 || voto > 2);
 
-                    Info *iAux2 = pesquisaTitulo(arvoreTitulos, op);
-                    iAux2->voto = voto;
-                    criarArvore(&arvoreVotos);
-                    votar(iAux2);
-                    preOrderRec(arvoreVotos);
+                    iAux = pesquisaTitulo(arvoreTitulos, op);
+                    iAux->voto = voto;
+                    votar(iAux);
+                    mostraMenu();
                 }
             }else{
-                printf("\bEleitor nao cadastrado\n");
+                printf("\b\nEleitor nao cadastrado\n");
                 mostraMenu();
             }
             break;
-
+        case 5:
+            printf("\bDigite o titulo do eleitor: \n");
+            scanf("%d", &op);
+            if(pesquisaTitulo(arvoreVotos, op)){
+                iAux = pesquisaTitulo(arvoreVotos, op);
+                retira(&arvoreVotos, *iAux);
+            } else printf("\bEleitor nao votou ainda\n");
+            mostraMenu();
         case 8:
             limpaArvore(arvoreVotos);
             limpaArvore(arvoreTitulos);
@@ -93,10 +110,13 @@ void mostraMenu() {
             printf("\b2- Arvore de votos\n");
             do {
                 scanf("%d", &op);
+                if(op < 1 || op > 2) printf("\bOpcao invalida, digite novamente: ");
             } while (op < 1 || op > 2);
 
             if (op == 1) preOrderRec(arvoreTitulos);
             else preOrderRec(arvoreVotos);
+        default:
+            mostraMenu();
     }
 }
 
@@ -173,11 +193,11 @@ void preOrderRec(No *no) {
         printf("\bTitulo de eleitor: %d\n", no->info->titulo_eleitor);
         printf("\bNome: %s", no->info->Nome);
         if (no->info->voto == 1 || no->info->voto == 2) {
-            printf("\bVoto: %d", no->info->voto);
+            printf("\bVoto: %d\n", no->info->voto);
         }
         preOrderRec(no->esq);
         preOrderRec(no->dir);
-    }
+    } else printf("\bNao a dados a serem impressos\n");
 }
 
 void sucessor(No *q, No **r) {
