@@ -1,7 +1,9 @@
 #include <stdio.h>
+#include "Arvore.h"
 
 int main() {
-    printf("Hello, World!\n");
+    criaInfo();
+    preOrderRec(arvoreTitulos);
 
     return 0;
 }
