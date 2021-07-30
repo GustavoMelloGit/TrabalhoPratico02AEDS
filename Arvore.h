@@ -13,9 +13,11 @@ No *arvoreTitulos;
 No *arvoreVotos;
 
 void criaArvoreVazia(No **);
-void insercao(No **, Info*);
 void insereTitulo(No **, Info *);
 void criaInfo();
 void preOrderRec (No* no);
 void mostraMenu();
-int pesquisa (No*, Info *) ;
+int pesquisa (No*, Info *);
+int retira(No **, Info);
+Info* pesquisaTitulo(No *, int);
+void votar(Info *);
