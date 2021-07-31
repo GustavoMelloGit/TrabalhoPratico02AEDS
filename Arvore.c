@@ -3,11 +3,13 @@
 #include <string.h>
 #include "Arvore.h"
 
+//Declaração de variáveis globais responsáveis pelos candidatos
 char candidato1Char[50] = "Jair Messias Bolsonaro";
 char candidato2Char[50] = "Luis Inacio Lula da Silva";
-
 int candidato1=0, candidato2=0;
 
+
+//Libera todos os nós da árvore
 void limpaArvore(No *node) {
     if (node == NULL) return;
 
@@ -17,10 +19,12 @@ void limpaArvore(No *node) {
     free(node);
 }
 
+//Cria a árvore para ser utilizada
 void criarArvore(No **no) {
     *no = NULL;
 }
 
+//Realiza a contagem dos votos
 void contaVotos(No *no){
 
     if (no != NULL) {
@@ -38,6 +42,7 @@ void contaVotos(No *no){
     }
 }
 
+//Função responsável pelo menu do programa e suas opções
 void mostraMenu() {
     int op, voto;
     Info *iAux;
@@ -149,6 +154,7 @@ void mostraMenu() {
     mostraMenu();
 }
 
+//Função responsável por receber o número do título e devolver uma estrutura do tipo Info com aquele titulo
 Info *pesquisaTitulo(No *no, int titulo) {
     Info *iAux;
 
@@ -162,11 +168,15 @@ Info *pesquisaTitulo(No *no, int titulo) {
     return iAux;
 }
 
+//Função responsável por contabilizar os votos
 void votar(Info *info) {
     insereTitulo(&arvoreVotos, info);
     printf("\bVoto contabilizado!\n");
 }
 
+/*Função que procura uma estrutura do tipo Info na
+ * árvore e retorna true ou false, caso ela esteja
+ * ou não incluída nela.*/
 int pesquisa(No *no, Info *info) {
     if (no == NULL) return 0;
 
@@ -178,6 +188,8 @@ int pesquisa(No *no, Info *info) {
     return 1;
 }
 
+/* Função responsável por criar um eleitor e inserí-lo
+ * na árvore de títulos */
 void criaInfo() {
     Info *info;
     info = (Info *) malloc(sizeof(Info));
@@ -204,6 +216,7 @@ void criaInfo() {
     mostraMenu();
 }
 
+//Função responsável por inserir um eleitor na árvore de títulos
 void insereTitulo(No **no, Info *info) {
     if (*no == NULL) {
         *no = (No *) malloc(sizeof(No));
@@ -216,6 +229,7 @@ void insereTitulo(No **no, Info *info) {
     }
 }
 
+//Função que percorre e imprime a árvore que a for enviada
 void preOrderRec(No *no) {
     if (no != NULL) {
         printf("\b========================\n");
@@ -229,43 +243,45 @@ void preOrderRec(No *no) {
     }
 }
 
-void sucessor(No *q, No **r) {
+//Função que procura o sucessor do nó a ser removido(caso ele tenha 2 filhos)
+void sucessor(No *no, No **no2) {
     No *pAux;
 
-    if ((*r)->esq != NULL) {
-        sucessor(q, &(*r)->esq);
+    if ((*no2)->esq != NULL) {
+        sucessor(no, &(*no2)->esq);
         return;
     }
 
-    q->info = (*r)->info;
-    pAux = *r;
-    *r = (*r)->dir;
+    no->info = (*no2)->info;
+    pAux = *no2;
+    *no2 = (*no2)->dir;
     free(pAux);
 }
 
-int retira(No **p, Info x) {
+//Função que retira um nó da árvore
+int retira(No **no, Info x) {
     No *pAux;
-    if (*p == NULL) return 0;
+    if (*no == NULL) return 0;
 
-    if (x.titulo_eleitor < (*p)->info->titulo_eleitor) return retira(&(*p)->esq, x);
+    if (x.titulo_eleitor < (*no)->info->titulo_eleitor) return retira(&(*no)->esq, x);
 
-    if (x.titulo_eleitor > (*p)->info->titulo_eleitor) return retira(&(*p)->dir, x);
+    if (x.titulo_eleitor > (*no)->info->titulo_eleitor) return retira(&(*no)->dir, x);
 
-    if ((*p)->dir == NULL) {
-        pAux = *p;
-        *p = (*p)->esq;
+    if ((*no)->dir == NULL) {
+        pAux = *no;
+        *no = (*no)->esq;
         free(pAux);
         mostraMenu();
         return 1;
     }
-    if ((*p)->esq == NULL) {
-        pAux = *p;
-        *p = (*p)->dir;
+    if ((*no)->esq == NULL) {
+        pAux = *no;
+        *no = (*no)->dir;
         free(pAux);
         mostraMenu();
         return 1;
     }
-    sucessor(*p, &(*p)->dir);
+    sucessor(*no, &(*no)->dir);
 
     mostraMenu();
     return 1;
