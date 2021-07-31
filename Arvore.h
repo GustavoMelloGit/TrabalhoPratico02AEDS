@@ -12,12 +12,15 @@ typedef struct No_Est {
 No *arvoreTitulos;
 No *arvoreVotos;
 
-void criaArvoreVazia(No **);
+void mostraMenu();
+void criarArvore(No **);
+void limpaArvore(No *);
+void contaVotos(No *);
 void insereTitulo(No **, Info *);
 void criaInfo();
+void votar(Info *);
 void preOrderRec (No* no);
-void mostraMenu();
+void sucessor(No *, No **);
 int pesquisa (No*, Info *);
 int retira(No **, Info);
 Info* pesquisaTitulo(No *, int);
-void votar(Info *);
