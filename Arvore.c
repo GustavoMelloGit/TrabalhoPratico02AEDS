@@ -45,6 +45,8 @@ void mostraMenu() {
                 retira(&arvoreTitulos, *iAux);
                 if(pesquisaTitulo(arvoreVotos, op)){
                     iAux = pesquisaTitulo(arvoreVotos, op);
+                    if(iAux->voto == 1) candidato1--;
+                    else candidato2--;
                     retira(&arvoreVotos, *iAux);
                 }
             } else{
