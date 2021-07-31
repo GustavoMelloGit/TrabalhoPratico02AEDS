@@ -3,6 +3,11 @@
 #include <string.h>
 #include "Arvore.h"
 
+char candidato1Char[50] = "Jair Messias Bolsonaro";
+char candidato2Char[50] = "Luis Inacio Lula da Silva";
+
+int candidato1=0, candidato2=0;
+
 void limpaArvore(No *node) {
     if (node == NULL) return;
 
@@ -14,6 +19,23 @@ void limpaArvore(No *node) {
 
 void criarArvore(No **no) {
     *no = NULL;
+}
+
+void contaVotos(No *no){
+
+    if (no != NULL) {
+        if(no->info->voto == 1) candidato1++;
+        else candidato2++;
+
+        printf("\b========================\n");
+        printf("\bTitulo de eleitor: %d\n", no->info->titulo_eleitor);
+        printf("\bNome: %s", no->info->Nome);
+        if (no->info->voto == 1 || no->info->voto == 2) {
+            printf("\bVoto: %d\n", no->info->voto);
+        }
+        contaVotos(no->esq);
+        contaVotos(no->dir);
+    }
 }
 
 void mostraMenu() {
@@ -38,6 +60,8 @@ void mostraMenu() {
         if(op < 0 || op > 9) printf("\bOpcao invalida, digite novamente\n");
     } while (op < 0 || op > 9);
 
+    printf("\n");
+
     switch (op) {
         case 1:
             criaInfo();
@@ -50,7 +74,6 @@ void mostraMenu() {
                 retira(&arvoreTitulos, *iAux);
             } else{
                 printf("\bTitulo nao existe\n\n");
-                mostraMenu();
             }
             break;
         case 3:
@@ -63,10 +86,8 @@ void mostraMenu() {
             if (op == 1) {
                 limpaArvore(arvoreVotos);
                 criarArvore(&arvoreVotos);
-                mostraMenu();
             } else{
                 criarArvore(&arvoreVotos);
-                mostraMenu();
             }
             break;
         case 4:
@@ -75,8 +96,8 @@ void mostraMenu() {
             if (pesquisaTitulo(arvoreTitulos, op)) {
                 if (!pesquisaTitulo(arvoreVotos, op)) {
                     printf("\bDigite seu voto:\n");
-                    printf("\b1- Jair Messias Bolsonaro\n");
-                    printf("\b2- Luis Inacio Lula da Silva\n");
+                    printf("\b1- %s\n", candidato1Char);
+                    printf("\b2- %s\n", candidato2Char);
                     do {
                         scanf("%d", &voto);
                         if (voto < 1 || voto > 2) printf("\bVoto invalido!\n");
@@ -85,11 +106,9 @@ void mostraMenu() {
                     iAux = pesquisaTitulo(arvoreTitulos, op);
                     iAux->voto = voto;
                     votar(iAux);
-                    mostraMenu();
                 }
             }else{
                 printf("\b\nEleitor nao cadastrado\n");
-                mostraMenu();
             }
             break;
         case 5:
@@ -99,25 +118,35 @@ void mostraMenu() {
                 iAux = pesquisaTitulo(arvoreVotos, op);
                 retira(&arvoreVotos, *iAux);
             } else printf("\bEleitor nao votou ainda\n");
-            mostraMenu();
+            break;
+        case 6:
+            printf("\b========================\n\n");
+            printf("\bLista de votados:\n");
+            contaVotos(arvoreVotos);
+            printf("\b\n========Contagem========\n");
+            if(candidato1 > candidato2){
+                printf("\bCandidato 2 recebeu: %d votos\n", candidato2);
+                printf("\bCandidato 1 recebeu: %d votos\n", candidato1);
+                printf("\bO candidato %s venceu\n", candidato1Char);
+            }
+            else if(candidato2 < candidato1){
+                printf("\bCandidato 1 recebeu: %d votos\n", candidato1);
+                printf("\bCandidato 2 recebeu: %d votos\n", candidato2);
+                printf("\bO candidato %s venceu\n", candidato2Char);
+            }
+            else printf("\bHouve um empate! Realize uma nova votacao\n");
+            break;
+        case 7:
+            preOrderRec(arvoreVotos);
+            break;
         case 8:
             limpaArvore(arvoreVotos);
             limpaArvore(arvoreTitulos);
             exit(1);
-        case 9:
-            printf("\bQual arvore deseja imprimir?\n");
-            printf("\b1- Arvore de titulos\n");
-            printf("\b2- Arvore de votos\n");
-            do {
-                scanf("%d", &op);
-                if(op < 1 || op > 2) printf("\bOpcao invalida, digite novamente: ");
-            } while (op < 1 || op > 2);
-
-            if (op == 1) preOrderRec(arvoreTitulos);
-            else preOrderRec(arvoreVotos);
         default:
             mostraMenu();
     }
+    mostraMenu();
 }
 
 Info *pesquisaTitulo(No *no, int titulo) {
@@ -153,10 +182,10 @@ void criaInfo() {
     Info *info;
     info = (Info *) malloc(sizeof(Info));
 
+    printf("\bDigite o nome do eleitor: ");
+    fflush(stdin);
+    fgets(info->Nome, 50, stdin);
     do {
-        printf("\bDigite o nome do eleitor: ");
-        fflush(stdin);
-        fgets(info->Nome, 50, stdin);
         printf("\bAgora, o numero do seu titulo: ");
         scanf("%d", &info->titulo_eleitor);
 
@@ -197,7 +226,7 @@ void preOrderRec(No *no) {
         }
         preOrderRec(no->esq);
         preOrderRec(no->dir);
-    } else printf("\bNao a dados a serem impressos\n");
+    }
 }
 
 void sucessor(No *q, No **r) {
@@ -236,22 +265,8 @@ int retira(No **p, Info x) {
         mostraMenu();
         return 1;
     }
-    /* Dois filhos */
     sucessor(*p, &(*p)->dir);
 
     mostraMenu();
     return 1;
 }
-
-//void insercao(No **no, Info *info){
-//    if (*no == NULL){
-//        *no=(No *)malloc(sizeof (No));
-//        (*no)->esq=NULL;
-//        (*no)->dir=NULL;
-//        (*no)->info = info;
-//    }
-//    else{
-//        if (item.codigo < ((*no)->item.codigo)) insercao(&((*no)->esq), item);
-//        else insercao(&((*no)->dir), item);
-//    }
-//}
