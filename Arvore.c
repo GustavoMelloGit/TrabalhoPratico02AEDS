@@ -48,6 +48,7 @@ void mostraMenu() {
                     if(iAux->voto == 1) candidato1--;
                     else candidato2--;
                     retira(&arvoreVotos, *iAux);
+                    printf("\b\nEleitor removido com sucesso!\n\n");
                 }
             } else{
                 printf("\bTitulo nao existe\n\n");
@@ -210,6 +211,7 @@ void criaInfo() {
     fgets(info->Nome, 50, stdin);
     do {
         printf("\bAgora, o numero do seu titulo: ");
+        fflush(stdin);
         scanf("%d", &info->titulo_eleitor);
 
         if (info->titulo_eleitor <= 0 || strlen(info->Nome) <= 2) {

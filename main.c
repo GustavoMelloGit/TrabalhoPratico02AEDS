@@ -3,6 +3,5 @@
 
 int main() {
     mostraMenu();
-
     return 0;
 }
