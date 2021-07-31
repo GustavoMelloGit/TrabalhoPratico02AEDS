@@ -36,15 +36,17 @@ Para evitar redundância de dados (informações iguais armazenadas em locais di
 
 deverá ser feito em uma estrutura separada que será **referenciada** pelas árvores (\*info). Utilize as estruturas abaixo:
 
-|**typedef struct** Info\_Est {|
 
-|**int** titulo\_eleitor;|
+**typedef struct** Info\_Est {
 
-|**char** Nome[50];|
+**int** titulo\_eleitor;
 
-|**int** voto;|
+**char** Nome[50];
 
-|}Info;|
+**int** voto;
+
+}Info;
+
 
 **typedef struct** No\_Est {
 
@@ -59,6 +61,7 @@ struct No\_Est \*dir;
 No \*arvoreTitulos;
 
 No \*arvoreVotos;
+
 
 **Observação:** Não permita que sejam cadastrados dois números de título de eleitor iguais. Ao final do programa,
 
