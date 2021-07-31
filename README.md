@@ -36,15 +36,15 @@ Para evitar redundância de dados (informações iguais armazenadas em locais di
 
 deverá ser feito em uma estrutura separada que será **referenciada** pelas árvores (\*info). Utilize as estruturas abaixo:
 
-**typedef struct** Info\_Est {
+|**typedef struct** Info\_Est {|
 
-**int** titulo\_eleitor;
+|**int** titulo\_eleitor;|
 
-**char** Nome[50];
+|**char** Nome[50];|
 
-**int** voto;
+|**int** voto;|
 
-}Info;
+|}Info;|
 
 **typedef struct** No\_Est {
 
