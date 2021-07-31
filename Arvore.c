@@ -63,6 +63,8 @@ void mostraMenu() {
             if (op == 1) {
                 limpaArvore(arvoreVotos);
                 criarArvore(&arvoreVotos);
+                candidato1 = 0;
+                candidato2 = 0;
             } else{
                 criarArvore(&arvoreVotos);
             }
