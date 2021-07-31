@@ -123,21 +123,26 @@ void mostraMenu() {
             } else printf("\bEleitor nao votou ainda\n");
             break;
         case 6:
-            printf("\b========================\n\n");
-            printf("\bLista de votados:\n");
-            contaVotos(arvoreVotos);
-            printf("\b\n========Contagem========\n");
-            if(candidato1 > candidato2){
-                printf("\bCandidato 2 recebeu: %d votos\n", candidato2);
-                printf("\bCandidato 1 recebeu: %d votos\n", candidato1);
-                printf("\bO candidato %s venceu\n", candidato1Char);
+            if(candidato1 == 0 && candidato2 ==0){
+                printf("\bAinda nao foi iniciada uma votacao.\n");
             }
-            else if(candidato2 > candidato1){
-                printf("\bCandidato 1 recebeu: %d votos\n", candidato1);
-                printf("\bCandidato 2 recebeu: %d votos\n", candidato2);
-                printf("\bO candidato %s venceu\n", candidato2Char);
+            else{
+                printf("\b========================\n\n");
+                printf("\bLista de votados:\n");
+                contaVotos(arvoreVotos);
+                printf("\b\n========Contagem========\n");
+                if(candidato1 > candidato2){
+                    printf("\bCandidato 2 recebeu: %d votos\n", candidato2);
+                    printf("\bCandidato 1 recebeu: %d votos\n", candidato1);
+                    printf("\bO candidato %s venceu\n", candidato1Char);
+                }
+                else if(candidato2 > candidato1){
+                    printf("\bCandidato 1 recebeu: %d votos\n", candidato1);
+                    printf("\bCandidato 2 recebeu: %d votos\n", candidato2);
+                    printf("\bO candidato %s venceu\n", candidato2Char);
+                }
+                else printf("\bHouve um empate! Realize uma nova votacao\n");
             }
-            else printf("\bHouve um empate! Realize uma nova votacao\n");
             break;
         case 7:
             preOrderRec(arvoreVotos);
@@ -169,7 +174,6 @@ void limpaArvore(No *node) {
 
 //Realiza a contagem dos votos
 void contaVotos(No *no){
-
     if (no != NULL) {
         printf("\b========================\n");
         printf("\bTitulo de eleitor: %d\n", no->info->titulo_eleitor);
