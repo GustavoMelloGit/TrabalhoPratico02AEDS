@@ -3,7 +3,7 @@ project(TrabalhoPratico02 C)
 
 set(CMAKE_C_STANDARD 11)
 set(PROJECT_HEADERS
-        src/header/Arvore.h
+        .src/header/Arvore.h
         )
 
 add_executable(TrabalhoPratico02

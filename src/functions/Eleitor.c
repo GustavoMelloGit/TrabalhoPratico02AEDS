@@ -12,6 +12,7 @@ void criaInfo() {
     printf("\bDigite o nome do eleitor: ");
     fflush(stdin);
     fgets(info->Nome, 50, stdin);
+
     do {
         printf("\bAgora, o numero do seu titulo: ");
         fflush(stdin);
@@ -26,6 +27,8 @@ void criaInfo() {
             info->titulo_eleitor = -1;
         }
     } while (info->titulo_eleitor <= 0);
+
+    info->votoRecebido = 0;
 
     printf("\b\nEleitor criado com sucesso!\n\n");
     insereTitulo(&arvoreTitulos, info);

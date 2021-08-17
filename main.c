@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "src/header/Arvore.h"
 
 int main() {
@@ -7,5 +8,6 @@ int main() {
     criarArvore(&arvoreTitulos);
 
     mostraMenu();
+
     return 0;
 }

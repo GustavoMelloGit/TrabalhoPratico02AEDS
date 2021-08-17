@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include "../header/Arvore.h"
 
-
 //Cria a árvore para ser utilizada
 void criarArvore(No **no) {
     *no = NULL;
@@ -19,14 +18,14 @@ void limpaArvore(No *node) {
 }
 
 //Realiza a contagem dos votos
-void contaVotos(No *no){
+void contaVotos(No *no) {
     if (no != NULL) {
         printf("\b========================\n");
         printf("\bTitulo de eleitor: %d\n", no->info->titulo_eleitor);
         printf("\bNome: %s", no->info->Nome);
-        if (no->info->voto == 1 || no->info->voto == 2) {
-            printf("\bVoto: %d\n", no->info->voto);
-        }
+        printf("\bVoto: %d\n", no->info->voto);
+        printf("\bVotos recebidos: %d\n", no->info->votoRecebido);
+
         contaVotos(no->esq);
         contaVotos(no->dir);
     }
@@ -45,15 +44,52 @@ void insereTitulo(No **no, Info *info) {
     }
 }
 
+//Função responsável por inserir um voto na árvore de candidatos, verificando o Info já existe nela
+void insereVoto(No **no, Info *info) {
+    if (*no == NULL) {
+        *no = (No *) malloc(sizeof(No));
+        (*no)->esq = NULL;
+        (*no)->dir = NULL;
+        (*no)->info = info;
+    } else {
+        //Caso esteja na arvoreCandidatos, o votado deverá ser reinserido
+        if (pesquisaTitulo(arvoreCandidatos, info->titulo_eleitor)) {
+            Info *iAux;
+            iAux = pesquisaTitulo(arvoreCandidatos, info->titulo_eleitor);
+
+            //Retirando e reinserindo para que seja ordenado de forma correta na arvore
+            if (iAux->votoRecebido == 0) {
+                retira(&arvoreCandidatos, *iAux);
+            } else {
+                retira(&arvoreCandidatos, *iAux);
+                insereVoto(&arvoreCandidatos, info);
+            }
+        } else {
+            if (info->votoRecebido < (*no)->info->votoRecebido) insereVoto(&((*no)->esq), info);
+            else insereVoto(&((*no)->dir), info);
+        }
+    }
+}
+
+//Função que imprime os votos recebidos de forma decrescente
+void imprimeVotos(No *no) {
+    if (no != NULL) {
+        imprimeVotos(no->dir);
+        printf("\b========================\n");
+        printf("\bTitulo de eleitor: %d\n", no->info->titulo_eleitor);
+        printf("\bNome: %s", no->info->Nome);
+        printf("\bVotos recebidos: %d\n", no->info->votoRecebido);
+        imprimeVotos(no->esq);
+    }
+}
+
 //Função que percorre e imprime a árvore que a for enviada
 void preOrderRec(No *no) {
     if (no != NULL) {
         printf("\b========================\n");
         printf("\bTitulo de eleitor: %d\n", no->info->titulo_eleitor);
         printf("\bNome: %s", no->info->Nome);
-        if (no->info->voto == 1 || no->info->voto == 2) {
-            printf("\bVoto: %d\n", no->info->voto);
-        }
+
         preOrderRec(no->esq);
         preOrderRec(no->dir);
     }
@@ -101,19 +137,27 @@ int retira(No **no, Info x) {
         pAux = *no;
         *no = (*no)->esq;
         free(pAux);
-        mostraMenu();
         return 1;
     }
     if ((*no)->esq == NULL) {
         pAux = *no;
         *no = (*no)->dir;
         free(pAux);
-        mostraMenu();
         return 1;
     }
     sucessor(*no, &(*no)->dir);
 
-    mostraMenu();
+    return 1;
+}
+
+//Pesquisa se na árvore contém alguém com o título indicado e retorna verdadeiro ou falso
+int contemTitulo(No *no, int titulo) {
+    if (no == NULL) return 0;
+
+    if (titulo < no->info->titulo_eleitor) return contemTitulo(no->esq, titulo);
+
+    if (titulo > no->info->titulo_eleitor) return contemTitulo(no->dir, titulo);
+
     return 1;
 }
 

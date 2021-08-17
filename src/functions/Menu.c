@@ -2,14 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//Declaração de variáveis globais responsáveis pelos candidatos
-char candidato1Char[50] = "Jair Messias Bolsonaro";
-char candidato2Char[50] = "Luis Inacio Lula da Silva";
-int candidato1=0, candidato2=0;
-
 //Função responsável pelo menu do programa e suas opções
 void mostraMenu() {
     int op, voto;
+    static int votacaoIniciada = 0;
     Info *iAux;
 
     printf("\b\n==========Menu==========\n");
@@ -26,7 +22,7 @@ void mostraMenu() {
     printf("Digite sua opcao: ");
     do {
         scanf("%d", &op);
-        if(op < 0 || op > 9) printf("\bOpcao invalida, digite novamente\n");
+        if (op < 0 || op > 8) printf("\bOpcao invalida, digite novamente\n");
     } while (op < 0 || op > 8);
 
     printf("\n");
@@ -35,124 +31,93 @@ void mostraMenu() {
         case 1:
             criaInfo();
             break;
-            case 2:
-                printf("\bQual titulo deseja remover?\n");
-                scanf("%d", &op);
-                if(pesquisaTitulo(arvoreTitulos, op)){
-                    iAux = pesquisaTitulo(arvoreTitulos, op);
-                    retira(&arvoreTitulos, *iAux);
-                    if(pesquisaTitulo(arvoreVotos, op)){
-                        iAux = pesquisaTitulo(arvoreVotos, op);
-                        if(iAux->voto == 1) candidato1--;
-                        else candidato2--;
-                        retira(&arvoreVotos, *iAux);
-                        printf("\b\nEleitor removido com sucesso!\n\n");
-                    }
-                } else{
-                    printf("\bTitulo nao existe\n\n");
+        case 2:
+            printf("\bQual titulo deseja remover?\n");
+            scanf("%d", &op);
+            if (pesquisaTitulo(arvoreTitulos, op)) {
+                iAux = pesquisaTitulo(arvoreTitulos, op);
+                retira(&arvoreTitulos, *iAux);
+                if (pesquisaTitulo(arvoreVotos, op)) {
+                    iAux = pesquisaTitulo(arvoreVotos, op);
+                    retira(&arvoreVotos, *iAux);
                 }
-                break;
-                case 3:
-                    printf("\bUma nova votacao excluirá dados anteriores,\n");
-                    printf("\bdeseja continuar? (1 - sim / 2 - nao)\n");
-                    do {
-                        scanf("%d", &op);
-                        if (op < 1 || op > 2) printf("\bOpcao invalida\n");
-                    } while (op < 1 || op > 2);
+                printf("\b\nEleitor removido com sucesso!\n\n");
+            } else {
+                printf("\bTitulo nao existe\n\n");
+            }
+            break;
+        case 3:
+            printf("\bUma nova votacao excluira dados anteriores,\n");
+            printf("\bdeseja continuar? (1 - sim / 2 - nao)\n");
+            do {
+                scanf("%d", &op);
+                if (op < 1 || op > 2) printf("\bOpcao invalida\n");
+            } while (op < 1 || op > 2);
 
-                    if (op == 1) {
-                        limpaArvore(arvoreVotos);
-                        criarArvore(&arvoreVotos);
-                        candidato1 = 0;
-                        candidato2 = 0;
-                    } else{
-                        mostraMenu();
-                    }
-                    printf("\b\nVotacao iniciada!\n\n");
-                    break;
-                    case 4:
-                        printf("\bUma votacao ja foi criada? (1- sim / 2- nao)\n");
+            if (op == 1) {
+                limpaArvore(arvoreVotos);
+                criarArvore(&arvoreVotos);
+                limpaArvore(arvoreCandidatos);
+                criarArvore(&arvoreCandidatos);
+                votacaoIniciada = 1;
+            } else {
+                mostraMenu();
+            }
+            printf("\b\nVotacao iniciada!\n\n");
+            break;
+        case 4:
+            //Verificação se uma votação foi criada
+            if (votacaoIniciada == 0) {
+                printf("\bVotacao ainda nao foi iniciada\n");
+                mostraMenu();
+            }
+                //Votando
+            else {
+                printf("\bDigite seu titulo de eleitor: ");
+                scanf("%d", &op);
+                if (pesquisaTitulo(arvoreTitulos, op)) {
+                    if (!pesquisaTitulo(arvoreVotos, op)) {
+                        printf("\bDigite o titulo de eleitor de quem deseja votar: ");
                         do {
-                            scanf("%d", &op);
-                            if(op < 1 || op > 2) printf("\bOpcao Invalida, digite novamente: ");
-                        } while (op < 1 || op > 2);
-                        if(op == 2){
-                            printf("\bDeseja criar uma? (1- sim / 2- nao)\n");
-                            do {
-                                scanf("%d", &op);
-                                if(op < 1 || op > 2) printf("\bOpcao Invalida, digite novamente: ");
-                            } while (op < 1 || op > 2);
+                            scanf("%d", &voto);
+                            if (!contemTitulo(arvoreTitulos, voto)) printf("\bTitulo invalido! digite novamente: ");
+                        } while (!contemTitulo(arvoreTitulos, voto));
 
-                            if(op == 1){
-                                limpaArvore(arvoreVotos);
-                                criarArvore(&arvoreVotos);
-                                printf("\b\nVotacao iniciada!\n\n");
-                            } else break;
-                        }
-                        printf("\bDigite seu titulo de eleitor: ");
-                        scanf("%d", &op);
-                        if (pesquisaTitulo(arvoreTitulos, op)) {
-                            if (!pesquisaTitulo(arvoreVotos, op)) {
-                                printf("\bDigite seu voto:\n");
-                                printf("\b1- %s\n", candidato1Char);
-                                printf("\b2- %s\n", candidato2Char);
-                                do {
-                                    scanf("%d", &voto);
-                                    if (voto < 1 || voto > 2) printf("\bVoto invalido!\n");
-                                } while (voto < 1 || voto > 2);
+                        iAux = pesquisaTitulo(arvoreTitulos, voto);
+                        iAux->votoRecebido++;
 
-                                if(voto == 1) candidato1++;
-                                else candidato2++;
+                        iAux = pesquisaTitulo(arvoreTitulos, op);
+                        iAux->voto = voto;
+                        votar(iAux);
+                        insereVoto(&arvoreCandidatos, pesquisaTitulo(arvoreTitulos, voto));
+                    } else printf("\b\nEleitor ja votou!\n\n");
+                } else printf("\b\nEleitor nao cadastrado\n");
+            }
 
-                                iAux = pesquisaTitulo(arvoreTitulos, op);
-                                iAux->voto = voto;
-                                votar(iAux);
-                            }
-                        }else{
-                            printf("\b\nEleitor nao cadastrado\n");
-                        }
-                        break;
-                        case 5:
-                            printf("\bDigite o titulo do eleitor: ");
-                            scanf("%d", &op);
-                            if(pesquisaTitulo(arvoreVotos, op)){
-                                iAux = pesquisaTitulo(arvoreVotos, op);
-                                if(iAux->voto == 1) candidato1--;
-                                else candidato2--;
-                                retira(&arvoreVotos, *iAux);
-                            } else printf("\bEleitor nao votou ainda\n");
-                            break;
-                            case 6:
-                                if(candidato1 == 0 && candidato2 ==0){
-                                    printf("\bAinda nao foi iniciada uma votacao.\n");
-                                }
-                                else{
-                                    printf("\b========================\n\n");
-                                    printf("\bLista de votados:\n");
-                                    contaVotos(arvoreVotos);
-                                    printf("\b\n========Contagem========\n");
-                                    if(candidato1 > candidato2){
-                                        printf("\bCandidato 2 recebeu: %d votos\n", candidato2);
-                                        printf("\bCandidato 1 recebeu: %d votos\n", candidato1);
-                                        printf("\bO candidato %s venceu\n", candidato1Char);
-                                    }
-                                    else if(candidato2 > candidato1){
-                                        printf("\bCandidato 1 recebeu: %d votos\n", candidato1);
-                                        printf("\bCandidato 2 recebeu: %d votos\n", candidato2);
-                                        printf("\bO candidato %s venceu\n", candidato2Char);
-                                    }
-                                    else printf("\bHouve um empate! Realize uma nova votacao\n");
-                                }
-                                break;
-                                case 7:
-                                    preOrderRec(arvoreTitulos);
-                                    break;
-                                    case 8:
-                                        limpaArvore(arvoreVotos);
-                                        limpaArvore(arvoreTitulos);
-                                        exit(1);
-                                        default:
-                                            mostraMenu();
+            break;
+        case 5:
+            printf("\bDigite seu titulo de eleitor: ");
+            scanf("%d", &op);
+            if (pesquisaTitulo(arvoreVotos, op)) {
+                iAux = pesquisaTitulo(arvoreVotos, op);
+                retira(&arvoreVotos, *iAux);
+                iAux = pesquisaTitulo(arvoreTitulos, iAux->voto);
+                iAux->votoRecebido--;
+                insereVoto(&arvoreCandidatos, iAux);
+            } else printf("\bEleitor nao votou ainda\n");
+            break;
+        case 6:
+            imprimeVotos(arvoreCandidatos);
+            break;
+        case 7:
+            preOrderRec(arvoreTitulos);
+            break;
+        case 8:
+            limpaArvore(arvoreVotos);
+            limpaArvore(arvoreTitulos);
+            exit(1);
+        default:
+            mostraMenu();
     }
     mostraMenu();
 }
